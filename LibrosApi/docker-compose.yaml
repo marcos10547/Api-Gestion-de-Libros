@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  # 1. Servicio de la API (Literat-API)
+  literat-api:
+    image: mylibraryapi_image:latest # Nombre recomendado para la imagen
+    build:
+      context: . # Asumo que el Dockerfile está en la raíz o en una carpeta común
+      dockerfile: Dockerfile
+    # ELIMINADO: container_name
+    
+    ports:
+      # REQUISITO: Puerto HOST 7663 (últimas 4 cifras) -> Puerto contenedor 8080 (o 5000)
+      - "7663:8080"
+      
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # VARIABLES DE CONEXIÓN (Necesitas leer esto en tu Repositorio/Servicio)
+      # El HOST debe ser el nombre del servicio de la DB: 'sqlserver'
+      - DB_HOST=sqlserver
+      - DB_NAME=MyLibraryDB 
+      - DB_USER=sa
+      - DB_PASSWORD=tuContraseñaSegura(!)1234
+      # VARIABLE EXTRA PARA CUMPLIR REQUISITO
+      - API_VERSION=1.0.0
+      
+    depends_on:
+      - sqlserver
+    volumes:
+      # Volumen para logs (REQUISITO EXTRA)
+      - logs_data:/app/logs
+      # Volumen para desarrollo (opcional)
+      - ./api:/app
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # 2. Servicio de la Base de Datos (SQL Server)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    # ELIMINADO: container_name
+    
+    ports:
+      # REQUISITO: Puerto HOST 3667 (últimas 4 invertidas) -> Puerto contenedor 1433
+      - "3667:1433"
+      
+    environment:
+      # Credenciales usadas por la imagen oficial
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=tuContraseñaSegura(!)1234
+      - MSSQL_PID=Express
+      
+    volumes:
+      # Persistencia de datos obligatoria
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+  frontend: # Se mantiene por si se añade un frontend de consumo
+
+volumes:
+  sqlserver_data:
+  logs_data: # Volumen para el requisito extra de log
