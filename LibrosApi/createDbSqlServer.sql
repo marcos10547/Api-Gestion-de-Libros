@@ -108,4 +108,8 @@ CREATE TABLE ListaDeseos_Libro (
     CONSTRAINT FK_LdL_Lista FOREIGN KEY (ListaId) REFERENCES ListaDeseos(ListaId),
     CONSTRAINT FK_LdL_Libro FOREIGN KEY (LibroISBN) REFERENCES Libro(ISBN)
 );
-GO
+
+
+
+
+
