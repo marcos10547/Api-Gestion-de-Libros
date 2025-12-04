@@ -1,2 +1,5 @@
-# Api-Gestion-de-Libros
-Esta aplicación de consola gestionará el catálogo de libros y los datos de autores de una pequeña editorial. Es un tema que permite establecer relaciones claras, múltiples atributos y diversas opciones de filtrado.
+# -d: Lo ejecuta en segundo plano (detached)
+# --build: Fuerza a reconstruir la imagen de tu API por si cambiaste código
+docker compose up -d --build
+
+
