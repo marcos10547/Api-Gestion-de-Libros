@@ -113,3 +113,8 @@ CREATE TABLE ListaDeseos_Libro (
 
 
 
+INSERT INTO Autor (NombreCompleto, Nacionalidad, FechaNacimiento, RoyaltyPorcentaje, NumObras, EsActivo)
+VALUES
+('Gabriel García Márquez', 'Colombiana', '1927-03-06', 12.50, 25, 1),
+('Isabel Allende', 'Chilena', '1942-08-02', 10.00, 35, 1),
+('Stephen King', 'Estadounidense', '1947-09-21', 15.00, 80, 1);
