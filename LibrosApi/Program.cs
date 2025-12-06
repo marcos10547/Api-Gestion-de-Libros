@@ -15,6 +15,10 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>(provider =>
 );
 builder.Services.AddScoped<IClienteService, ClienteService>();
 
+builder.Services.AddScoped<ILibroRepository, LibroRepository>(provider =>
+    new LibroRepository(connectionString)
+);
+builder.Services.AddScoped<ILibroService, LibroService>();
 
 builder.Services.AddCors(options =>
 {
