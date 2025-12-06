@@ -4,13 +4,16 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 
-// --- A. INYECCIÓN DE REPOSITORIOS (ADO.NET) ---
-// Registramos el Repositorio y le inyectamos el string de conexión.
 builder.Services.AddScoped<IAutorRepository, AutorRepository>(provider =>
     new AutorRepository(connectionString)
 );
 builder.Services.AddScoped<IAutorService, AutorService>();
 
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>(provider =>
+    new ClienteRepository(connectionString)
+);
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 
 builder.Services.AddCors(options =>
@@ -33,7 +36,6 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-// Configurar el pipeline de HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -42,7 +44,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// --- ACTIVAR CORS ---
 app.UseCors("PermitirTodo");
 
 app.UseAuthorization();
