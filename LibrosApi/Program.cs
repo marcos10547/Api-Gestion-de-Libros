@@ -10,6 +10,11 @@ builder.Services.AddScoped<IAutorRepository, AutorRepository>(provider =>
 builder.Services.AddScoped<IAutorService, AutorService>();
 
 
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>(provider =>
+    new ClienteRepository(connectionString)
+);
+builder.Services.AddScoped<IClienteService, ClienteService>();
+
 
 builder.Services.AddCors(options =>
 {
