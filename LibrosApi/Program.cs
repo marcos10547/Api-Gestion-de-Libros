@@ -20,6 +20,13 @@ builder.Services.AddScoped<ILibroRepository, LibroRepository>(provider =>
 );
 builder.Services.AddScoped<ILibroService, LibroService>();
 
+builder.Services.AddScoped<IGeneroRepository, GeneroRepository>(provider => 
+    new GeneroRepository(connectionString)
+);
+builder.Services.AddScoped<IGeneroService, GeneroService>();
+
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTodo", app => 
