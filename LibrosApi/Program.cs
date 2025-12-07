@@ -25,6 +25,11 @@ builder.Services.AddScoped<IGeneroRepository, GeneroRepository>(provider =>
 );
 builder.Services.AddScoped<IGeneroService, GeneroService>();
 
+builder.Services.AddScoped<IReseñaRepository, ReseñaRepository>(provider =>
+    new ReseñaRepository(connectionString)
+);
+builder.Services.AddScoped<IReseñaService, ReseñaService>();
+
 
 
 builder.Services.AddCors(options =>
