@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L I T E R A T | Experience</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos extra para la pantalla de Login */
+        #login-screen {
+            height: 100vh;
+            background: linear-gradient(135deg, #fcfbf9 0%, #e3e3e3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            width: 100%;
+            z-index: 9999;
+        }
+        .login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .role-btn {
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+        .role-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+        .d-none { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <h1 class="serif-font mb-4">Bienvenido a Literat</h1>
+            <p class="text-muted mb-5">Por favor, selecciona cómo deseas ingresar para personalizar tu experiencia.</p>
+            
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="role-btn p-3 border rounded cursor-pointer" onclick="iniciarSesion('cliente')">
+                        <i class="fas fa-user fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Soy Lector</h5>
+                        <small class="text-muted">Explorar y comprar</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="role-btn p-3 border rounded cursor-pointer" onclick="iniciarSesion('admin')">
+                        <i class="fas fa-user-shield fa-3x text-dark mb-3"></i>
+                        <h5 class="fw-bold">Soy Admin</h5>
+                        <small class="text-muted">Gestionar datos</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4" id="login-cliente-input" style="display:none;">
+                <input type="number" id="inputClienteId" class="form-control text-center mb-2" placeholder="Introduce tu ID de Cliente (ej: 1)">
+                <button class="btn btn-custom-primary w-100" onclick="confirmarLoginCliente()">Entrar a la Tienda</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-interface" class="d-none">
+        
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#" onclick="location.reload()">
+                    <i class="fas fa-feather-alt me-2" style="color: var(--accent-gold);"></i>LITERAT
+                </a>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div id="menu-cliente" class="d-none d-flex align-items-center gap-3">
+                        <span class="text-muted small me-2">Hola, Lector #<span id="display-user-id"></span></span>
+                        <button class="btn btn-icon" onclick="cargarMiListaDeseos()" title="Mi Lista de Deseos">
+                            <i class="fas fa-heart text-danger"></i>
+                        </button>
+                    </div>
+
+                    <div id="menu-admin" class="d-none">
+                        <span class="badge bg-dark me-2">MODO ADMINISTRADOR</span>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill ms-3" onclick="location.reload()">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <header id="hero-store" class="hero-section d-none">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title display-3">Tu próxima historia</h1>
+                <p class="lead mb-4 fw-light">Explora nuestra colección exclusiva.</p>
+                <div class="d-flex justify-content-center gap-2 flex-wrap" id="filtros-genero-hero">
+                    </div>
+            </div>
+        </header>
+
+        <main class="container my-5" style="padding-top: 80px;">
+            
+            <div id="vista-cliente" class="d-none">
+                <div class="row mb-5 justify-content-center">
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <input type="text" id="buscador" class="form-control rounded-pill ps-5" placeholder="Buscar título...">
+                            <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="contenedor-libros" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5"></div>
+            </div>
+
+            <div id="vista-admin" class="d-none">
+                <h2 class="serif-font mb-4">Panel de Gestión</h2>
+                
+                <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#panel-libros">📚 Libros</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#panel-autores">✍️ Autores</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#panel-generos">🏷️ Géneros</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#panel-clientes">👥 Clientes</button></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="panel-libros">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h4>Inventario</h4>
+                            <button class="btn btn-custom-primary" data-bs-toggle="modal" data-bs-target="#modalCrearLibro">+ Nuevo Libro</button>
+                        </div>
+                        <div id="admin-tabla-libros" class="table-responsive"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="panel-autores">
+                        <h4>Catálogo de Autores</h4>
+                        <div id="admin-lista-autores" class="row row-cols-1 row-cols-md-4 g-3 mt-2"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="panel-generos">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h4>Categorías</h4>
+                            <button class="btn btn-sm btn-dark" onclick="crearGeneroRapido()">+ Añadir Género</button>
+                        </div>
+                        <ul id="admin-lista-generos" class="list-group"></ul>
+                    </div>
+
+                    <div class="tab-pane fade" id="panel-clientes">
+                        <h4>Base de Datos de Usuarios</h4>
+                        <div id="admin-lista-clientes" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="modal fade" id="detalleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-5 bg-light p-3 text-center">
+                        <img id="modalImagen" src="" class="img-fluid rounded shadow-sm" style="max-height: 350px;">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="modal-body p-4">
+                            <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                            <h2 class="serif-font mb-2" id="modalTitulo"></h2>
+                            <h4 class="text-warning mb-3" id="modalPrecio"></h4>
+                            <div class="d-flex gap-2 mb-4">
+                                <button class="btn btn-custom-primary flex-grow-1" onclick="agregarAListaDeseos()">
+                                    <i class="far fa-heart me-2"></i> Favoritos
+                                </button>
+                                <button class="btn btn-outline-dark" onclick="abrirFormularioResena()">Reseñar</button>
+                            </div>
+                            <hr>
+                            <h6>Reseñas:</h6>
+                            <div id="contenedor-resenas" style="max-height: 150px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCrearLibro" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Libro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCrearLibro">
+                        <input type="text" class="form-control mb-2" id="newIsbn" placeholder="ISBN" required>
+                        <input type="text" class="form-control mb-2" id="newTitulo" placeholder="Título" required>
+                        <input type="number" class="form-control mb-2" id="newPrecio" placeholder="Precio" required>
+                        <input type="number" class="form-control mb-2" id="newPaginas" placeholder="Páginas">
+                        <input type="number" class="form-control mb-2" id="newAutorId" placeholder="ID Autor" required>
+                        <input type="number" class="form-control mb-2" id="newGeneroId" placeholder="ID Género" required>
+                        <button type="submit" class="btn btn-success w-100">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCrearResena" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4 text-center">
+                    <h5>Tu opinión</h5>
+                    <form id="formResena">
+                        <select id="resenaValor" class="form-select mb-3">
+                            <option value="5">★★★★★</option>
+                            <option value="4">★★★★</option>
+                            <option value="3">★★★</option>
+                        </select>
+                        <textarea id="resenaTexto" class="form-control mb-3" placeholder="Comentario..." required></textarea>
+                        <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" id="offcanvasLista">
+        <div class="offcanvas-header bg-dark text-white">
+            <h5>Mis Favoritos</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="lista-deseos-contenido"></div>
+            <button class="btn btn-outline-danger w-100 mt-3" onclick="borrarListaCompleta()">Borrar Todo</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
