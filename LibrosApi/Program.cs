@@ -30,7 +30,10 @@ builder.Services.AddScoped<IReseñaRepository, ReseñaRepository>(provider =>
 );
 builder.Services.AddScoped<IReseñaService, ReseñaService>();
 
-
+builder.Services.AddScoped<IListaDeseosRepository, ListaDeseosRepository>(provider =>
+    new ListaDeseosRepository(connectionString)
+);
+builder.Services.AddScoped<IListaDeseosService, ListaDeseosService>();
 
 builder.Services.AddCors(options =>
 {
