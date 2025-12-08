@@ -9,5 +9,5 @@ public class ListaDeseosResponseDTO
     public int NumLibros { get; set; }
     public int ClienteId { get; set; }
     
-    public List<string> LibrosISBN { get; set; } = new List<string>();
+    public List<LibroResponseDTO> Libros { get; set; } = new List<LibroResponseDTO>();
 }
