@@ -15,6 +15,25 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>(provider =>
 );
 builder.Services.AddScoped<IClienteService, ClienteService>();
 
+builder.Services.AddScoped<ILibroRepository, LibroRepository>(provider =>
+    new LibroRepository(connectionString)
+);
+builder.Services.AddScoped<ILibroService, LibroService>();
+
+builder.Services.AddScoped<IGeneroRepository, GeneroRepository>(provider => 
+    new GeneroRepository(connectionString)
+);
+builder.Services.AddScoped<IGeneroService, GeneroService>();
+
+builder.Services.AddScoped<IReseñaRepository, ReseñaRepository>(provider =>
+    new ReseñaRepository(connectionString)
+);
+builder.Services.AddScoped<IReseñaService, ReseñaService>();
+
+builder.Services.AddScoped<IListaDeseosRepository, ListaDeseosRepository>(provider =>
+    new ListaDeseosRepository(connectionString)
+);
+builder.Services.AddScoped<IListaDeseosService, ListaDeseosService>();
 
 builder.Services.AddCors(options =>
 {
@@ -42,7 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("PermitirTodo");
 
