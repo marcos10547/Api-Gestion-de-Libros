@@ -160,23 +160,6 @@ public class ListaDeseosRepository : IListaDeseosRepository
         }
     }
 
-    public IEnumerable<string> GetLibrosInLista(int listaId)
-    {
-        var isbns = new List<string>();
-        using (var db = GetConnection())
-        {
-            db.Open();
-            var command = db.CreateCommand();
-            command.CommandText = "SELECT LibroISBN FROM ListaDeseos_Libro WHERE ListaId = @ListaId";
-            command.Parameters.Add(new SqlParameter("@ListaId", listaId));
-            using (var reader = (SqlDataReader)command.ExecuteReader())
-            {
-                while (reader.Read()) isbns.Add(reader["LibroISBN"].ToString()!);
-            }
-        }
-        return isbns;
-    }
-
     public void RecalcularTotales(int listaId)
     {
         using (var db = GetConnection())
@@ -199,5 +182,40 @@ public class ListaDeseosRepository : IListaDeseosRepository
             command.Parameters.Add(new SqlParameter("@Id", listaId));
             command.ExecuteNonQuery();
         }
+    }
+
+     public IEnumerable<Libro> GetLibrosInLista(int listaId)
+    {
+        var libros = new List<Libro>();
+        using (var db = GetConnection())
+        {
+            db.Open();
+            var command = db.CreateCommand();
+            command.CommandText = @"
+                SELECT L.* FROM Libro L
+                INNER JOIN ListaDeseos_Libro LDL ON L.ISBN = LDL.LibroISBN
+                WHERE LDL.ListaId = @ListaId";
+            
+            command.Parameters.Add(new SqlParameter("@ListaId", listaId));
+            
+            using (var reader = (SqlDataReader)command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    libros.Add(new Libro
+                    {
+                        ISBN = reader["ISBN"].ToString()!,
+                        Titulo = reader["Titulo"].ToString()!,
+                        PrecioVenta = (decimal)reader["PrecioVenta"],
+                        NumPaginas = (int)reader["NumPaginas"],
+                        FechaPublicacion = (DateTime)reader["FechaPublicacion"],
+                        EsBestSeller = (bool)reader["EsBestSeller"],
+                        AutorId = (int)reader["AutorId"],
+                        GeneroId = (int)reader["GeneroId"]
+                    });
+                }
+            }
+        }
+        return libros;
     }
 }

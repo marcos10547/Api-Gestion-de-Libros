@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public interface IListaDeseosRepository
 {
     ListaDeseos GetById(int id);
@@ -6,9 +8,10 @@ public interface IListaDeseosRepository
     ListaDeseos Create(ListaDeseos lista);
     bool Delete(int id);
     
-    // Métodos para la relación N:M (Libros en la lista)
     bool AddLibro(int listaId, string isbn);
     bool RemoveLibro(int listaId, string isbn);
-    IEnumerable<string> GetLibrosInLista(int listaId); // Devuelve los ISBNs
-    void RecalcularTotales(int listaId); // Actualiza NumLibros y CostoEstimado
+    
+    IEnumerable<Libro> GetLibrosInLista(int listaId); 
+    
+    void RecalcularTotales(int listaId);
 }

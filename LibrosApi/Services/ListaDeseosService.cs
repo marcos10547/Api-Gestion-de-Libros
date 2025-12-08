@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System;
+
 public class ListaDeseosService : IListaDeseosService
 {
     private readonly IListaDeseosRepository _repository;
@@ -11,7 +15,19 @@ public class ListaDeseosService : IListaDeseosService
     {
         if (lista == null) return null!;
         
-        var libros = _repository.GetLibrosInLista(lista.ListaId).ToList();
+        var librosEntities = _repository.GetLibrosInLista(lista.ListaId);
+
+        var librosDTO = librosEntities.Select(l => new LibroResponseDTO
+        {
+            ISBN = l.ISBN,
+            Titulo = l.Titulo,
+            PrecioVenta = l.PrecioVenta,
+            NumPaginas = l.NumPaginas,
+            FechaPublicacion = l.FechaPublicacion,
+            EsBestSeller = l.EsBestSeller,
+            AutorId = l.AutorId,
+            GeneroId = l.GeneroId
+        }).ToList();
 
         return new ListaDeseosResponseDTO
         {
@@ -23,7 +39,7 @@ public class ListaDeseosService : IListaDeseosService
             EsPublica = lista.EsPublica,
             NumLibros = lista.NumLibros,
             ClienteId = lista.ClienteId,
-            LibrosISBN = libros
+            Libros = librosDTO 
         };
     }
 

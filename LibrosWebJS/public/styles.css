@@ -296,3 +296,30 @@ h1, h2, h3, h4, h5, .serif-font {
     transform: translateX(5px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+
+/* --- ARREGLO FILTROS ACTIVOS --- */
+.filter-btn {
+    transition: all 0.3s ease;
+    border-width: 2px;
+}
+
+/* Estado activo: Fondo blanco y texto oscuro */
+.filter-btn.active-filter {
+    background-color: white !important;
+    color: var(--text-main) !important;
+    border-color: white !important;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Estado inactivo: Transparente y borde blanco fino */
+.filter-btn.inactive-filter {
+    background-color: transparent !important;
+    color: rgba(255,255,255,0.8) !important;
+    border-color: rgba(255,255,255,0.4) !important;
+}
+
+.filter-btn:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-color: white;
+}
