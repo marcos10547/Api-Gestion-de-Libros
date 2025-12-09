@@ -44,5 +44,22 @@ public class OpinionController : ControllerBase
     {
         return _reseñaService.DeleteReseña(id) ? NoContent() : NotFound();
     }
-}
 
+
+    [HttpGet("/api/libros/{isbn}/estadisticas")]
+    public IActionResult GetEstadisticas(string isbn)
+    {
+        var stats = _reseñaService.GetEstadisticas(isbn);
+        return Ok(stats);
+    }
+
+    [HttpGet("/api/libros/{isbn}/opiniones")]
+    public IActionResult GetByLibroFiltradas(
+        string isbn,  
+        [FromQuery] DateTime? minFecha
+        )
+    {
+        var resenas = _reseñaService.GetReseñasFiltradas(isbn, minFecha);
+        return Ok(resenas);
+    }
+}

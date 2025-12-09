@@ -37,7 +37,16 @@ public class OpinionService : IOpinionService
         return MapToDTO(_repository.GetById(id));
     }
 
-   
+    public IEnumerable<OpinionResponseDTO> GetReseñasFiltradas(string isbn, DateTime? minFecha)
+    {
+        var lista = _repository.GetFiltradas(isbn, minFecha);
+        return lista.Select(MapToDTO);
+    }
+
+    public OpinionStatsDTO GetEstadisticas(string isbn)
+    {
+        return _repository.GetEstadisticas(isbn);
+    }
 
 
     public OpinionResponseDTO CreateReseña(OpinionCreateDTO dto)

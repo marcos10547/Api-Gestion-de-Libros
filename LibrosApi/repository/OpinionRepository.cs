@@ -78,7 +78,6 @@ public class OpinionRepository : IOpinionRepository
         }
     }
 
- 
 
     public bool Update(Opiniones r)
     {
@@ -109,6 +108,64 @@ public class OpinionRepository : IOpinionRepository
         cmd.Parameters.Add(new SqlParameter("@Id", clienteId));
         var result = cmd.ExecuteScalar();
         return result != null ? result.ToString() : "Usuario Eliminado";
+    }
+
+     public IEnumerable<Opiniones> GetFiltradas(string isbn, DateTime? minFecha)
+    {
+        var lista = new List<Opiniones>();
+        using (var db = GetConnection())
+        {
+            db.Open();
+            var cmd = db.CreateCommand();
+            
+            string sql = "SELECT * FROM Opiniones WHERE LibroISBN = @ISBN";
+            cmd.Parameters.Add(new SqlParameter("@ISBN", isbn));
+
+            if (minFecha.HasValue)
+            {
+                sql += " AND FechaReseña >= @MinFecha";
+                cmd.Parameters.Add(new SqlParameter("@MinFecha", minFecha.Value));
+            }
+            cmd.CommandText = sql;
+
+            using (var reader = (SqlDataReader)cmd.ExecuteReader())
+            {
+                while (reader.Read()) lista.Add(MapFromReader(reader));
+            }
+        }
+        return lista;
+    }
+
+    public OpinionStatsDTO GetEstadisticas(string isbn)
+    {
+        var stats = new OpinionStatsDTO();
+        using (var db = GetConnection())
+        {
+            db.Open();
+            var cmd = db.CreateCommand();
+            cmd.CommandText = @"
+                SELECT 
+                    COUNT(*) as Total,
+                    ISNULL(AVG(CAST(Puntuacion AS FLOAT)), 0) as Media,
+                    ISNULL(MIN(Puntuacion), 0) as Minimo,
+                    ISNULL(MAX(Puntuacion), 0) as Maximo
+                FROM Opiniones 
+                WHERE LibroISBN = @ISBN";
+            
+            cmd.Parameters.Add(new SqlParameter("@ISBN", isbn));
+
+            using (var reader = (SqlDataReader)cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    stats.TotalOpiniones = (int)reader["Total"];
+                    stats.PuntuacionMedia = (double)reader["Media"];
+                    stats.PuntuacionMinima = (int)reader["Minimo"];
+                    stats.PuntuacionMaxima = (int)reader["Maximo"];
+                }
+            }
+        }
+        return stats;
     }
 
 }
