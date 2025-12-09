@@ -35,6 +35,11 @@ builder.Services.AddScoped<IListaDeseosRepository, ListaDeseosRepository>(provid
 );
 builder.Services.AddScoped<IListaDeseosService, ListaDeseosService>();
 
+builder.Services.AddScoped<IOpinionRepository, OpinionRepository>(provider =>
+    new OpinionRepository(connectionString)
+);
+builder.Services.AddScoped<IOpinionService, OpinionService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTodo", app => 

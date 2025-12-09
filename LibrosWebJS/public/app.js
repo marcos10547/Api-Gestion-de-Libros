@@ -1,6 +1,6 @@
 // app.js
 
-const API_BASE = 'http://localhost:7655/api'; 
+const API_BASE = 'http://localhost:7755/api'; 
 
 // ESTADO GLOBAL
 let estadoApp = {
