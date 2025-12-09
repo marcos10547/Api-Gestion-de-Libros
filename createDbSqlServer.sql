@@ -80,6 +80,22 @@ CREATE TABLE Reseña (
     CONSTRAINT FK_Resena_Libro FOREIGN KEY (LibroISBN) REFERENCES Libro(ISBN)
 );
 
+-- TABLA  DE OPINIONES 
+CREATE TABLE Opiniones (
+    ReseñaId INT PRIMARY KEY IDENTITY(1,1), 
+    TituloReseña NVARCHAR(100),
+    Comentario NVARCHAR(1000) NOT NULL,
+    Puntuacion INT NOT NULL,
+    ClienteId INT NOT NULL,
+    FechaReseña DATETIME NOT NULL,
+    nombreCliente NVARCHAR(100),
+    LibroISBN NVARCHAR(13) NOT NULL,
+    
+    CONSTRAINT FK_Opinion_Cliente FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId),
+    CONSTRAINT FK_Opinion_Libro FOREIGN KEY (LibroISBN) REFERENCES Libro(ISBN)
+);
+
+
 -- TABLA LISTA DESEOS (6/6) - FK a Cliente
 CREATE TABLE ListaDeseos (
     ListaId INT PRIMARY KEY IDENTITY(1,1), -- PK
@@ -118,3 +134,14 @@ VALUES
 ('Gabriel García Márquez', 'Colombiana', '1927-03-06', 12.50, 25, 1),
 ('Isabel Allende', 'Chilena', '1942-08-02', 10.00, 35, 1),
 ('Stephen King', 'Estadounidense', '1947-09-21', 15.00, 80, 1);
+
+
+{
+  "tituloReseña": "Buen libro",
+  "comentario": "Muy buen libro el de la cabra del diseño",
+  "puntuacion": 5,
+  "clienteId": 1,
+  "fechaReseña": "2025-12-09T17:16:13.203Z",
+  "nombreCliente": "Marcos",
+  "libroISBN": "77222160MA"
+}
